@@ -1,55 +1,157 @@
 // === Section Navigation ===
-document.querySelectorAll('.nav-link').forEach(link => {
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav-link');
+
+function showSection(target, updateHash = true) {
+  const section = document.getElementById(target) ? target : 'home';
+
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.dataset.section === section);
+  });
+
+  sections.forEach(item => {
+    item.classList.toggle('active', item.id === section);
+  });
+
+  if (updateHash && window.location.hash !== `#${section}`) {
+    history.pushState(null, '', `#${section}`);
+  }
+
+  if (section === 'admin') {
+    loadAdminDashboard();
+  }
+}
+
+navLinks.forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
-    const target = link.dataset.section;
-
-    // Update nav active state
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
-
-    // Show target section
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(target).classList.add('active');
+    showSection(link.dataset.section);
   });
 });
 
-// === Login ===
-document.getElementById('login-btn').addEventListener('click', async () => {
-  const username = document.getElementById('username').value;
-  const password  = document.getElementById('password').value;
-  const msg = document.getElementById('login-message');
+window.addEventListener('popstate', () => {
+  showSection(window.location.hash.slice(1) || 'home', false);
+});
 
-  msg.classList.remove('hidden');
-  msg.style.background = '#eff6ff';
-  msg.style.borderColor = '#bfdbfe';
-  msg.style.color = '#1d4ed8';
-  msg.textContent = '처리 중...';
+window.addEventListener('hashchange', () => {
+  showSection(window.location.hash.slice(1) || 'home', false);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  showSection(window.location.hash.slice(1) || 'home', false);
+});
+
+// === Login ===
+const loginButton = document.getElementById('login-btn');
+const loginMessage = document.getElementById('login-message');
+
+function setMessageState(success) {
+  loginMessage.classList.remove('hidden');
+  loginMessage.style.background = success ? '#dcfce7' : '#fee2e2';
+  loginMessage.style.borderColor = success ? '#86efac' : '#fca5a5';
+  loginMessage.style.color = success ? '#166534' : '#991b1b';
+}
+
+function renderLoginMessage(message, query, success) {
+  setMessageState(success);
+  loginMessage.replaceChildren();
+
+  const text = document.createElement('span');
+  text.textContent = message;
+  loginMessage.append(text);
+
+  if (query) {
+    const lineBreak = document.createElement('br');
+    const code = document.createElement('code');
+    code.className = 'query-preview';
+    code.textContent = query;
+    loginMessage.append(lineBreak, code);
+  }
+}
+
+loginButton.addEventListener('click', async () => {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  loginMessage.classList.remove('hidden');
+  loginMessage.style.background = '#eff6ff';
+  loginMessage.style.borderColor = '#bfdbfe';
+  loginMessage.style.color = '#1d4ed8';
+  loginMessage.textContent = '처리 중...';
 
   try {
-    const res  = await fetch('/api/login', {
+    const res = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password }),
     });
     const data = await res.json();
 
-    if (data.success) {
-      msg.style.background = '#dcfce7';
-      msg.style.borderColor = '#86efac';
-      msg.style.color = '#166534';
-    } else {
-      msg.style.background = '#fee2e2';
-      msg.style.borderColor = '#fca5a5';
-      msg.style.color = '#991b1b';
-    }
+    renderLoginMessage(data.message, data.query, data.success);
 
-    // 실행된 SQL 쿼리도 함께 표시
-    msg.innerHTML = `${data.message}<br><code style="font-size:0.8em;opacity:0.8">${data.query}</code>`;
+    if (data.success && data.user?.role === 'admin') {
+      showSection('admin');
+    }
   } catch (e) {
-    msg.style.background = '#fee2e2';
-    msg.style.borderColor = '#fca5a5';
-    msg.style.color = '#991b1b';
-    msg.textContent = '서버에 연결할 수 없습니다.';
+    renderLoginMessage('서버에 연결할 수 없습니다.', '', false);
   }
 });
+
+// === Admin Dashboard ===
+const adminDenied = document.getElementById('admin-denied');
+const adminDashboard = document.getElementById('admin-dashboard');
+const adminRole = document.getElementById('admin-role');
+const dashboardRole = document.getElementById('dashboard-role');
+const dashboardStats = document.getElementById('dashboard-stats');
+const dashboardLogs = document.getElementById('dashboard-logs');
+
+function showAccessDenied(role = 'guest') {
+  adminDenied.classList.remove('hidden');
+  adminDashboard.classList.add('hidden');
+  adminRole.textContent = role;
+  adminRole.className = role === 'admin' ? 'badge badge-success' : 'badge badge-default';
+}
+
+function showDashboard(data) {
+  adminDenied.classList.add('hidden');
+  adminDashboard.classList.remove('hidden');
+  dashboardRole.textContent = data.role;
+
+  dashboardStats.replaceChildren();
+  data.dashboard.stats.forEach(stat => {
+    const statItem = document.createElement('div');
+    statItem.className = 'dashboard-stat';
+
+    const label = document.createElement('span');
+    label.textContent = stat.label;
+
+    const value = document.createElement('strong');
+    value.textContent = stat.value;
+
+    statItem.append(label, value);
+    dashboardStats.append(statItem);
+  });
+
+  dashboardLogs.replaceChildren();
+  data.dashboard.logs.forEach(log => {
+    const item = document.createElement('li');
+    item.textContent = log;
+    dashboardLogs.append(item);
+  });
+}
+
+async function loadAdminDashboard() {
+  try {
+    const res = await fetch('/api/admin/verify');
+    const data = await res.json();
+
+    if (!res.ok || !data.authorized) {
+      showAccessDenied(data.role);
+      return;
+    }
+
+    showDashboard(data);
+  } catch (e) {
+    showAccessDenied('unknown');
+  }
+}
