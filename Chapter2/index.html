@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026ESC - 수학과학 체험전</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="container header-inner">
+    <div class="header-brand">
+      <img src="./logo.png" alt="ESC Logo" class="header-logo">
+      <span class="header-title">2026ESC 수학과학 체험전</span>
+    </div>
+    <nav class="header-nav">
+      <a href="#home" class="nav-link active" data-section="home">Home</a>
+      <a href="#login" class="nav-link" data-section="login">Login</a>
+      <a href="#admin" class="nav-link" data-section="admin">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main">
+
+  <!-- Home Section -->
+  <section id="home" class="section active">
+    <div class="container">
+      <div class="card text-center">
+        <h1>2026ESC 수학과학 체험전</h1>
+        <hr>
+        <p>다람쥐 헌 쳇바퀴에 타고파</p>
+        <p>The quick brown fox jumps over the lazy dog</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login Section -->
+  <section id="login" class="section">
+    <div class="container">
+      <div class="card card-narrow">
+        <h2>Login</h2>
+        <form id="login-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-input" placeholder="Enter username">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="login-btn">Login</button>
+        </form>
+        <div id="login-message" class="message hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Admin Section -->
+  <section id="admin" class="section">
+    <div class="container">
+      <div class="card text-center">
+        <div class="access-denied">
+          <div class="lock-icon">🔒</div>
+          <h2>Access Denied</h2>
+          <p class="text-muted">운영진 권한이 필요한 페이지입니다.</p>
+          <!-- TODO: Python 백엔드에서 권한 검증 - GET /api/admin/verify -->
+          <p>현재 권한: <span class="badge badge-default" id="admin-role">참가자</span></p>
+          <p class="text-muted">이 페이지는 운영진 계정으로 로그인 후 접근할 수 있습니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p>&copy; 2026 ESC 수학과학 체험전. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
