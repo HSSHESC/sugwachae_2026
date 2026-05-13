@@ -99,21 +99,47 @@ loginButton.addEventListener('click', async () => {
 
 // === Admin Dashboard ===
 const adminDenied = document.getElementById('admin-denied');
+const adminGate = document.getElementById('admin-gate');
 const adminDashboard = document.getElementById('admin-dashboard');
 const adminRole = document.getElementById('admin-role');
+const adminAccessForm = document.getElementById('admin-access-form');
+const adminAccessPassword = document.getElementById('admin-access-password');
+const adminAccessMessage = document.getElementById('admin-access-message');
 const dashboardRole = document.getElementById('dashboard-role');
 const dashboardStats = document.getElementById('dashboard-stats');
 const dashboardLogs = document.getElementById('dashboard-logs');
+let pendingAdminDashboard = null;
 
 function showAccessDenied(role = 'guest') {
   adminDenied.classList.remove('hidden');
+  adminGate.classList.add('hidden');
   adminDashboard.classList.add('hidden');
   adminRole.textContent = role;
   adminRole.className = role === 'admin' ? 'badge badge-success' : 'badge badge-default';
+  pendingAdminDashboard = null;
+}
+
+function showAdminGate(data) {
+  pendingAdminDashboard = data;
+  adminDenied.classList.add('hidden');
+  adminGate.classList.remove('hidden');
+  adminDashboard.classList.add('hidden');
+  adminAccessPassword.value = '';
+  adminAccessMessage.classList.add('hidden');
+  adminAccessPassword.focus();
+}
+
+function renderAdminAccessMessage(message, success) {
+  adminAccessMessage.classList.remove('hidden');
+  adminAccessMessage.style.background = success ? '#dcfce7' : '#fee2e2';
+  adminAccessMessage.style.borderColor = success ? '#86efac' : '#fca5a5';
+  adminAccessMessage.style.color = success ? '#166534' : '#991b1b';
+  adminAccessMessage.textContent = message;
 }
 
 function showDashboard(data) {
   adminDenied.classList.add('hidden');
+  adminGate.classList.add('hidden');
   adminDashboard.classList.remove('hidden');
   dashboardRole.textContent = data.role;
 
@@ -150,8 +176,25 @@ async function loadAdminDashboard() {
       return;
     }
 
-    showDashboard(data);
+    showAdminGate(data);
   } catch (e) {
     showAccessDenied('unknown');
   }
 }
+
+adminAccessForm.addEventListener('submit', () => {
+  const accessPassword = adminAccessPassword.value;
+
+  if (!pendingAdminDashboard) {
+    renderAdminAccessMessage('관리자 세션을 먼저 확인해야 합니다.', false);
+    return;
+  }
+
+  if (accessPassword === 'ESCADMIN') {
+    renderAdminAccessMessage('접근 비밀번호가 확인되었습니다.', true);
+    showDashboard(pendingAdminDashboard);
+    return;
+  }
+
+  renderAdminAccessMessage('접근 비밀번호가 올바르지 않습니다.', false);
+});

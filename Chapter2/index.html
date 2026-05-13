@@ -71,6 +71,18 @@
         </div>
       </div>
 
+      <div class="card card-narrow hidden" id="admin-gate">
+        <h2>관리자 페이지 접근 제한</h2>
+        <form id="admin-access-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="admin-access-password">접근 비밀번호 입력:</label>
+            <input type="password" id="admin-access-password" class="form-input" placeholder="Password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">확인</button>
+        </form>
+        <div id="admin-access-message" class="message hidden"></div>
+      </div>
+
       <div class="card hidden" id="admin-dashboard">
         <div class="dashboard-header">
           <div>
