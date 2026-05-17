@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2026ESC - 수학과학 체험전</title>
-  <link rel="stylesheet" href="style.css">
+  <title>2026 ESC 수학과학 체험전</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
@@ -12,12 +12,13 @@
 <header class="header">
   <div class="container header-inner">
     <div class="header-brand">
-      <img src="./logo.png" alt="ESC Logo" class="header-logo">
-      <span class="header-title">2026ESC 수학과학 체험전</span>
+      <img src="/static/LOGO.png" alt="ESC Logo" class="header-logo">
+      <span class="header-title">2026 ESC 수학과학 체험전</span>
     </div>
     <nav class="header-nav">
       <a href="#home" class="nav-link active" data-section="home">Home</a>
       <a href="#login" class="nav-link" data-section="login">Login</a>
+      <a href="#admin" class="nav-link" data-section="admin">Admin</a>
     </nav>
   </div>
 </header>
@@ -67,7 +68,7 @@
           <h2>Access Denied</h2>
           <p class="text-muted">운영진 권한이 필요한 페이지입니다.</p>
           <p>현재 권한: <span class="badge badge-default" id="admin-role">guest</span></p>
-          <p class="text-muted">이 페이지는 운영진 계정으로 로그인 후 접근할 수 있습니다.</p>
+          <p class="hint-text">💡 힌트: 브라우저 개발자 도구(F12) &gt; Sources에서 페이지 소스를 확인해 보세요.</p>
         </div>
       </div>
 
@@ -81,6 +82,33 @@
           <button type="submit" class="btn btn-primary btn-block">확인</button>
         </form>
         <div id="admin-access-message" class="message hidden"></div>
+      </div>
+
+      <div class="card card-narrow hidden" id="admin-login">
+        <h2>관리자 로그인</h2>
+        <p class="text-muted">관리자 계정으로 로그인하세요.</p>
+        <form id="admin-login-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="admin-login-username">Username</label>
+            <input type="text" id="admin-login-username" class="form-input" placeholder="Enter username">
+          </div>
+          <div class="form-group">
+            <label for="admin-login-password">Password</label>
+            <input type="password" id="admin-login-password" class="form-input" placeholder="Enter password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+        <div id="admin-login-message" class="message hidden"></div>
+      </div>
+
+      <div class="card card-narrow hidden" id="admin-final">
+        <h2>마지막 미션</h2>
+        <p class="text-muted">로그인에 성공했습니다. 하지만 대시보드 접근을 위한 마지막 인증이 남아있습니다.</p>
+        <p class="hint-text">💡 힌트: 브라우저 개발자 도구(F12) &gt; Application &gt; Local Storage에서 특정 값을 설정해야 합니다.</p>
+        <div class="final-mission-area">
+          <button class="btn btn-primary btn-block" id="final-check-btn">인증 확인</button>
+        </div>
+        <div id="admin-final-message" class="message hidden"></div>
       </div>
 
       <div class="card hidden" id="admin-dashboard">
@@ -111,6 +139,6 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script src="/static/script.js"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify, send_from_directory, session
+from flask import Flask, request, jsonify, render_template, session
 import sqlite3
 import os
 
-app = Flask(__name__, static_folder='.')
+app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'chapter2-sqli-lab-secret')
 
-DB = 'lab.db'
+DB = os.path.join(os.path.dirname(__file__), 'lab.db')
 
 def init_db():
     con = sqlite3.connect(DB)
@@ -22,16 +22,9 @@ def init_db():
     con.commit()
     con.close()
 
-# -------------------------
-# 정적 파일 서빙
-# -------------------------
 @app.route('/')
 def index():
-    return send_from_directory('.', 'index.html')
-
-@app.route('/<path:path>')
-def static_files(path):
-    return send_from_directory('.', path)
+    return render_template('index.html')
 
 # -------------------------
 # 로그인 — SQL Injection 취약 (의도적)
