@@ -1,6 +1,10 @@
+// 개발용 임시 저장 — 배포 전 제거 예정
+sessionStorage.setItem('debug_admin_pw', 'NAVENADMIN');
+
 // === Section Navigation ===
 const sections = document.querySelectorAll('.section');
 const navLinks = document.querySelectorAll('.nav-link');
+let adminUnlocked = false;
 
 function showSection(target, updateHash = true) {
   const section = document.getElementById(target) ? target : 'home';
@@ -25,20 +29,25 @@ function showSection(target, updateHash = true) {
 navLinks.forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
+    if (link.dataset.section === 'admin' && !adminUnlocked) return;
     showSection(link.dataset.section);
   });
 });
 
+function safeTarget(target) {
+  return (target === 'admin' && !adminUnlocked) ? 'home' : target;
+}
+
 window.addEventListener('popstate', () => {
-  showSection(window.location.hash.slice(1) || 'home', false);
+  showSection(safeTarget(window.location.hash.slice(1) || 'home'), false);
 });
 
 window.addEventListener('hashchange', () => {
-  showSection(window.location.hash.slice(1) || 'home', false);
+  showSection(safeTarget(window.location.hash.slice(1) || 'home'), false);
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-  showSection(window.location.hash.slice(1) || 'home', false);
+  showSection(safeTarget(window.location.hash.slice(1) || 'home'), false);
 });
 
 // === Login ===
@@ -137,10 +146,25 @@ function renderAdminAccessMessage(message, success) {
   adminAccessMessage.textContent = message;
 }
 
+async function loadContract() {
+  const el = document.getElementById('contract-content');
+  try {
+    const res = await fetch('/api/admin/document');
+    const data = await res.json();
+    el.innerHTML = marked.parse(data.content);
+  } catch (e) {
+    el.textContent = '문서를 불러올 수 없습니다.';
+  }
+}
+
 function showDashboard(data) {
+  adminUnlocked = true;
   adminDenied.classList.add('hidden');
   adminGate.classList.add('hidden');
   adminDashboard.classList.remove('hidden');
+  const navAdmin = document.getElementById('nav-admin');
+  if (navAdmin) navAdmin.textContent = '🔓 우리의 나쁜 업적';
+  loadContract();
   dashboardRole.textContent = data.role;
 
   dashboardStats.replaceChildren();
@@ -182,7 +206,7 @@ async function loadAdminDashboard() {
   }
 }
 
-adminAccessForm.addEventListener('submit', () => {
+adminAccessForm.addEventListener('submit', async () => {
   const accessPassword = adminAccessPassword.value;
 
   if (!pendingAdminDashboard) {
@@ -190,11 +214,21 @@ adminAccessForm.addEventListener('submit', () => {
     return;
   }
 
-  if (accessPassword === 'ESCADMIN') {
-    renderAdminAccessMessage('접근 비밀번호가 확인되었습니다.', true);
-    showDashboard(pendingAdminDashboard);
-    return;
-  }
+  try {
+    const res = await fetch('/api/admin/gate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: accessPassword }),
+    });
+    const data = await res.json();
 
-  renderAdminAccessMessage('접근 비밀번호가 올바르지 않습니다.', false);
+    if (data.success) {
+      renderAdminAccessMessage(data.message, true);
+      showDashboard(pendingAdminDashboard);
+    } else {
+      renderAdminAccessMessage(data.message, false);
+    }
+  } catch (e) {
+    renderAdminAccessMessage('서버에 연결할 수 없습니다.', false);
+  }
 });

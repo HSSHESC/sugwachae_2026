@@ -118,17 +118,50 @@ def admin_verify():
         'dashboard': {
             'title': '관리자 권한 대시보드',
             'stats': [
-                {'label': '권한 상태', 'value': 'ADMIN'},
-                {'label': '운영진 세션', 'value': '활성'},
-                {'label': '숨겨진 페이지', 'value': '접속 허용'},
+                {'label': '이번 달 데이터 판매', 'value': '3,847 건'},
+                {'label': '현재 감시 중인 사용자', 'value': '2,041 명'},
+                {'label': '미납 과태료 합계', 'value': '₩ 12억'},
             ],
             'logs': [
-                '관리자 전용 참가자 명단 조회 가능',
-                '체험전 운영 설정 변경 가능',
-                'SQL Injection 실습 인증 완료',
+                '09:12 — 사용자 1,200명 개인정보 제3자 제공 완료',
+                '10:44 — 보안팀 해고 처리 완료 (23명)',
+                '14:31 — 올해의 나쁜 기업 수상 소감문 작성 중',
+                '16:55 — SQL 취약점 패치 요청서 반려 처리',
+                '18:10 — 임원 성과급 ₩4.2억 지급 완료',
             ],
         },
     })
+
+
+@app.route('/api/admin/document')
+def get_contract():
+    user = session.get('user')
+    if not user or user.get('role') != 'admin':
+        return jsonify({'error': '권한 없음'}), 403
+    with open('계약서.md', 'r', encoding='utf-8') as f:
+        content = f.read()
+    return jsonify({'content': content})
+
+
+@app.route('/api/admin/document/download')
+def download_contract():
+    user = session.get('user')
+    if not user or user.get('role') != 'admin':
+        return jsonify({'error': '권한 없음'}), 403
+    return send_from_directory('.', '계약서.png', as_attachment=True,
+                               download_name='내븐_개인정보이전계약서.png')
+
+
+@app.route('/api/admin/gate', methods=['POST'])
+def admin_gate():
+    user = session.get('user')
+    if not user or user.get('role') != 'admin':
+        return jsonify({'success': False, 'message': '관리자 세션이 없습니다.'}), 403
+
+    data = request.get_json()
+    if data.get('password', '') == 'NAVENADMIN':
+        return jsonify({'success': True, 'message': '접근 비밀번호가 확인되었습니다.'})
+    return jsonify({'success': False, 'message': '접근 비밀번호가 올바르지 않습니다.'})
 
 
 if __name__ == '__main__':
