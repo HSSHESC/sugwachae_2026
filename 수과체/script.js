@@ -29,13 +29,13 @@ function showSection(target, updateHash = true) {
 navLinks.forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
-    if (link.dataset.section === 'admin' && !adminUnlocked) return;
+    if (link.dataset.section !== 'admin' && !adminUnlocked) return;
     showSection(link.dataset.section);
   });
 });
 
 function safeTarget(target) {
-  return (target === 'admin' && !adminUnlocked) ? 'home' : target;
+  return (target === 'admin' && adminUnlocked) ? 'home' : target;
 }
 
 window.addEventListener('popstate', () => {
@@ -43,7 +43,7 @@ window.addEventListener('popstate', () => {
 });
 
 window.addEventListener('hashchange', () => {
-  showSection(safeTarget(window.location.hash.slice(1) || 'home'), false);
+  showSection(window.location.hash.slice(1) || 'home', false);
 });
 
 window.addEventListener('DOMContentLoaded', () => {
