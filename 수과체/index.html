@@ -24,9 +24,12 @@
       <nav class="topbar-nav">
         <a href="#home" class="nav-link active" data-section="home">홈</a>
         <a href="#login" class="nav-link" data-section="login">로그인</a>
-        <a href="#admin" class="nav-link" data-section="admin" id="nav-admin">우리의 나쁜 업적</a>
+        <a href="#admin" class="nav-link" data-section="admin" id="nav-admin">극비</a>
       </nav>
       <div class="topbar-right">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="테마 전환">
+          <i data-lucide="sun" width="14" height="14"></i>
+        </button>
         <span class="security-badge">
           <i data-lucide="shield-alert" width="12" height="12"></i>
           보안 등급 : 극비
@@ -114,6 +117,57 @@
             </div>
           </div>
 
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 내부자 환영 페이지 (admin SQLi 성공 시 자동 진입, nav 비표시) -->
+    <section id="insider" class="section">
+      <div class="section-inner">
+
+        <div class="hero-banner insider-hero">
+          <div class="hero-text">
+            <p class="hero-eyebrow">관리자 인증 완료 · 내부자 등급</p>
+            <h1>내부자 포털에 접속됨</h1>
+            <p class="hero-desc">당신은 일반 직원이 보지 못하는 자료에 접근 중입니다. 이 화면은 외부 노출 시 즉시 보안팀(이미 해고됨)에 통보됩니다.</p>
+          </div>
+          <div class="hero-status">
+            <i data-lucide="shield-check" width="24" height="24"></i>
+            <span>인증됨</span>
+          </div>
+        </div>
+
+        <div class="insider-secret-card">
+          <div class="insider-secret-label">
+            <i data-lucide="key-round" width="14" height="14"></i>
+            극비 페이지 접근 — 1차 비밀번호
+          </div>
+          <code class="insider-secret-value">20090610</code>
+          <p class="insider-secret-note">상단 nav의 "극비" 탭에서 이 값을 입력하세요.</p>
+        </div>
+
+        <div class="stats-row insider-stats">
+          <div class="stat-card">
+            <span class="stat-label">데이터 거래 파트너</span>
+            <strong class="stat-value">147 사</strong>
+            <span class="stat-note stat-red">국외 89사 포함</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">미공개 매출 (분기)</span>
+            <strong class="stat-value">₩ 217억</strong>
+            <span class="stat-note stat-red">장부 외 처리</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">내부 감사 보류</span>
+            <strong class="stat-value">42 건</strong>
+            <span class="stat-note">무기한 연기</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">극비 권한 등급</span>
+            <strong class="stat-value">L7</strong>
+            <span class="stat-note">최고 임원 동급</span>
+          </div>
         </div>
 
       </div>
@@ -212,7 +266,7 @@
           <div class="dashboard-header">
             <div>
               <p class="eyebrow">기밀 문서 — 관리자 전용</p>
-              <h2>내븐의 나쁜 업적</h2>
+              <h2>극비 — 내븐 내부 기록</h2>
             </div>
             <span class="badge badge-red" id="dashboard-role">ADMIN</span>
           </div>

@@ -88,9 +88,21 @@ loginButton.addEventListener('click', async () => {
     const data = await res.json();
 
     renderLoginMessage(data.message, data.query, data.success);
+
+    if (data.success && data.user?.role === 'admin') {
+      setTimeout(() => showSection('insider'), 600);
+    }
   } catch (e) {
     renderLoginMessage('서버에 연결할 수 없습니다.', '', false);
   }
+});
+
+// 테마 토글 (night ↔ light). 극비 nav는 항상 corp-dark 색이라 light에서만 드러남.
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click', () => {
+  const isLight = document.body.classList.toggle('theme-light');
+  themeToggle.innerHTML = `<i data-lucide="${isLight ? 'moon' : 'sun'}" width="14" height="14"></i>`;
+  if (window.lucide) window.lucide.createIcons();
 });
 
 // === Admin Section ===

@@ -74,7 +74,7 @@ def login():
             'role': row[3],
         }
         if row[3] == 'admin':
-            msg = "admin 로그인 성공 했습니다. '우리의 나쁜 업적'의 1차 비밀번호는 20090610"
+            msg = 'admin 로그인 성공'
         else:
             msg = f'{row[1]} 로그인 성공 (role: {row[3]})'
         return jsonify({

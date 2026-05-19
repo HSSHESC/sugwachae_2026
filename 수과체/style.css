@@ -21,6 +21,28 @@
   --shadow-md: 0 2px 8px rgb(0 0 0 / 0.10);
 
   --transition: all 0.15s ease;
+
+  /* Theme tokens (night 기본) */
+  --topbar-bg:           var(--corp-dark);
+  --nav-color:           rgba(255,255,255,0.5);
+  --nav-color-hover:     rgba(255,255,255,0.88);
+  --nav-hover-bg:        rgba(255,255,255,0.07);
+  --nav-active-color:    #fff;
+  --nav-active-bg:       rgba(185,28,28,0.22);
+  --toggle-color:        rgba(255,255,255,0.7);
+  --toggle-hover-bg:     rgba(255,255,255,0.1);
+}
+
+/* light 테마 오버라이드 — topbar/nav만 영향. main 콘텐츠는 그대로. */
+body.theme-light {
+  --topbar-bg:           #f3f4f6;
+  --nav-color:           rgba(0,0,0,0.55);
+  --nav-color-hover:     #111;
+  --nav-hover-bg:        rgba(0,0,0,0.06);
+  --nav-active-color:    #111;
+  --nav-active-bg:       rgba(185,28,28,0.18);
+  --toggle-color:        rgba(0,0,0,0.6);
+  --toggle-hover-bg:     rgba(0,0,0,0.06);
 }
 
 /* === Reset === */
@@ -46,8 +68,9 @@ body {
 .topbar {
   height: 54px;
   flex-shrink: 0;
-  background: var(--corp-dark);
+  background: var(--topbar-bg);
   border-bottom: 2px solid var(--corp-accent);
+  transition: background 0.2s ease;
 }
 
 .topbar-inner {
@@ -105,7 +128,7 @@ body {
   padding: 0.42rem 0.8rem;
   font-size: 0.92rem;
   font-weight: 500;
-  color: rgba(255,255,255,0.5);
+  color: var(--nav-color);
   text-decoration: none;
   border-radius: var(--radius-sm);
   transition: var(--transition);
@@ -113,13 +136,43 @@ body {
 }
 
 .nav-link:hover {
-  color: rgba(255,255,255,0.88);
-  background: rgba(255,255,255,0.07);
+  color: var(--nav-color-hover);
+  background: var(--nav-hover-bg);
 }
 
 .nav-link.active {
-  color: #fff;
-  background: rgba(185,28,28,0.22);
+  color: var(--nav-active-color);
+  background: var(--nav-active-bg);
+}
+
+/* 극비 위장: 항상 corp-dark 색 + 오른쪽 끝 배치 */
+#nav-admin,
+#nav-admin:hover,
+#nav-admin.active {
+  color: var(--corp-dark);
+  background: transparent;
+}
+#nav-admin { margin-left: auto; }
+
+/* 테마 토글 버튼 */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-right: 0.6rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--toggle-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.theme-toggle:hover {
+  background: var(--toggle-hover-bg);
+  color: var(--nav-color-hover);
 }
 
 /* === Topbar Right === */
@@ -708,6 +761,64 @@ body {
 #admin.bg-1 { background-image: url('/images/로그인1.png'); }
 #admin.bg-2 { background-image: url('/images/로그인2.png'); }
 #admin.bg-3 { background-image: url('/images/로그인3.png'); }
+
+/* gate-1 전용: 가로폭 맞춤 + 카드 중앙 정렬 */
+#admin.bg-1 {
+  background-size: 100% auto;
+  background-position: center center;
+}
+#admin.bg-1 .section-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+/* === Insider Section === */
+.insider-hero { border-left: 4px solid var(--corp-accent); }
+
+.insider-secret-card {
+  background: var(--corp-dark);
+  border: 1px solid var(--corp-accent);
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 0 0 1px rgba(185,28,28,0.15);
+}
+.insider-secret-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--corp-accent);
+  margin-bottom: 0.5rem;
+}
+.insider-secret-value {
+  display: block;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.4rem;
+}
+.insider-secret-note {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.insider-stats { margin-bottom: 0.9rem; }
+
+.insider-cta-wrap {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.3rem;
+}
+.insider-cta-wrap .btn { display: inline-flex; align-items: center; gap: 0.4rem; width: auto; }
 
 /* === Typography === */
 h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.9rem; color: var(--text-main); letter-spacing: -0.02em; }
