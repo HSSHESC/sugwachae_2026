@@ -1,10 +1,6 @@
-// 개발용 임시 저장 — 배포 전 제거 예정
-sessionStorage.setItem('debug_admin_pw', 'NAVENADMIN');
-
 // === Section Navigation ===
 const sections = document.querySelectorAll('.section');
 const navLinks = document.querySelectorAll('.nav-link');
-let adminUnlocked = false;
 
 function showSection(target, updateHash = true) {
   const section = document.getElementById(target) ? target : 'home';
@@ -29,17 +25,12 @@ function showSection(target, updateHash = true) {
 navLinks.forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
-    if (link.dataset.section !== 'admin' && !adminUnlocked) return;
     showSection(link.dataset.section);
   });
 });
 
-function safeTarget(target) {
-  return (target === 'admin' && adminUnlocked) ? 'home' : target;
-}
-
 window.addEventListener('popstate', () => {
-  showSection(safeTarget(window.location.hash.slice(1) || 'home'), false);
+  showSection(window.location.hash.slice(1) || 'home', false);
 });
 
 window.addEventListener('hashchange', () => {
@@ -47,7 +38,7 @@ window.addEventListener('hashchange', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-  showSection(safeTarget(window.location.hash.slice(1) || 'home'), false);
+  showSection(window.location.hash.slice(1) || 'home', false);
 });
 
 // === Login ===
@@ -97,53 +88,67 @@ loginButton.addEventListener('click', async () => {
     const data = await res.json();
 
     renderLoginMessage(data.message, data.query, data.success);
-
-    if (data.success && data.user?.role === 'admin') {
-      showSection('admin');
-    }
   } catch (e) {
     renderLoginMessage('서버에 연결할 수 없습니다.', '', false);
   }
 });
 
-// === Admin Dashboard ===
-const adminDenied = document.getElementById('admin-denied');
+// === Admin Section ===
+const adminGate1 = document.getElementById('admin-gate-1');
 const adminGate = document.getElementById('admin-gate');
+const adminFinal = document.getElementById('admin-final');
 const adminDashboard = document.getElementById('admin-dashboard');
-const adminRole = document.getElementById('admin-role');
+
+const adminGate1Form = document.getElementById('admin-gate1-form');
+const adminGate1Password = document.getElementById('admin-gate1-password');
+const adminGate1Message = document.getElementById('admin-gate1-message');
+
 const adminAccessForm = document.getElementById('admin-access-form');
 const adminAccessPassword = document.getElementById('admin-access-password');
 const adminAccessMessage = document.getElementById('admin-access-message');
+
 const dashboardRole = document.getElementById('dashboard-role');
 const dashboardStats = document.getElementById('dashboard-stats');
 const dashboardLogs = document.getElementById('dashboard-logs');
-let pendingAdminDashboard = null;
 
-function showAccessDenied(role = 'guest') {
-  adminDenied.classList.remove('hidden');
+const finalCheckBtn = document.getElementById('final-check-btn');
+const adminFinalMessage = document.getElementById('admin-final-message');
+
+function hideAll() {
+  adminGate1.classList.add('hidden');
   adminGate.classList.add('hidden');
+  adminFinal.classList.add('hidden');
   adminDashboard.classList.add('hidden');
-  adminRole.textContent = role;
-  adminRole.className = role === 'admin' ? 'badge badge-success' : 'badge badge-default';
-  pendingAdminDashboard = null;
 }
 
-function showAdminGate(data) {
-  pendingAdminDashboard = data;
-  adminDenied.classList.add('hidden');
+function showAdminGate1() {
+  hideAll();
+  adminGate1.classList.remove('hidden');
+  adminGate1Password.value = '';
+  adminGate1Message.classList.add('hidden');
+  adminGate1Password.focus();
+}
+
+function showAdminGate() {
+  hideAll();
   adminGate.classList.remove('hidden');
-  adminDashboard.classList.add('hidden');
   adminAccessPassword.value = '';
   adminAccessMessage.classList.add('hidden');
   adminAccessPassword.focus();
 }
 
-function renderAdminAccessMessage(message, success) {
-  adminAccessMessage.classList.remove('hidden');
-  adminAccessMessage.style.background = success ? '#dcfce7' : '#fee2e2';
-  adminAccessMessage.style.borderColor = success ? '#86efac' : '#fca5a5';
-  adminAccessMessage.style.color = success ? '#166534' : '#991b1b';
-  adminAccessMessage.textContent = message;
+function showAdminFinal() {
+  hideAll();
+  adminFinal.classList.remove('hidden');
+  adminFinalMessage.classList.add('hidden');
+}
+
+function renderInlineMessage(el, message, success) {
+  el.classList.remove('hidden');
+  el.style.background = success ? '#dcfce7' : '#fee2e2';
+  el.style.borderColor = success ? '#86efac' : '#fca5a5';
+  el.style.color = success ? '#166534' : '#991b1b';
+  el.textContent = message;
 }
 
 async function loadContract() {
@@ -158,12 +163,8 @@ async function loadContract() {
 }
 
 function showDashboard(data) {
-  adminUnlocked = true;
-  adminDenied.classList.add('hidden');
-  adminGate.classList.add('hidden');
+  hideAll();
   adminDashboard.classList.remove('hidden');
-  const navAdmin = document.getElementById('nav-admin');
-  if (navAdmin) navAdmin.textContent = '🔓 우리의 나쁜 업적';
   loadContract();
   dashboardRole.textContent = data.role;
 
@@ -190,45 +191,46 @@ function showDashboard(data) {
   });
 }
 
-async function loadAdminDashboard() {
+function loadAdminDashboard() {
+  showAdminGate1();
+}
+
+// Step 1: 1차 비밀번호 (admin SQLi 로그인 응답 메시지에서 노출됨)
+adminGate1Form.addEventListener('submit', () => {
+  if (adminGate1Password.value === '20090610') {
+    renderInlineMessage(adminGate1Message, '1차 인증 완료.', true);
+    setTimeout(showAdminGate, 600);
+    return;
+  }
+  renderInlineMessage(adminGate1Message, '1차 비밀번호가 올바르지 않습니다.', false);
+});
+
+// Step 2: 2차 비밀번호 (소스 코드 주석에서 노출됨)
+adminAccessForm.addEventListener('submit', () => {
+  if (adminAccessPassword.value === 'NAVENADMIN') {
+    renderInlineMessage(adminAccessMessage, '2차 인증 완료.', true);
+    setTimeout(showAdminFinal, 600);
+    return;
+  }
+  renderInlineMessage(adminAccessMessage, '2차 비밀번호가 올바르지 않습니다.', false);
+});
+
+// Step 3: sessionStorage 변수 + admin 세션 확인
+finalCheckBtn.addEventListener('click', async () => {
+  if (sessionStorage.getItem('naven_admin') !== 'true') {
+    renderInlineMessage(adminFinalMessage, 'sessionStorage에 naven_admin 변수가 없습니다.', false);
+    return;
+  }
   try {
     const res = await fetch('/api/admin/verify');
     const data = await res.json();
-
-    if (!res.ok || !data.authorized) {
-      showAccessDenied(data.role);
+    if (!data.authorized) {
+      renderInlineMessage(adminFinalMessage, '관리자 세션이 없습니다. 메인 로그인에서 admin으로 다시 로그인하세요.', false);
       return;
     }
-
-    showAdminGate(data);
+    sessionStorage.removeItem('naven_admin');
+    showDashboard(data);
   } catch (e) {
-    showAccessDenied('unknown');
-  }
-}
-
-adminAccessForm.addEventListener('submit', async () => {
-  const accessPassword = adminAccessPassword.value;
-
-  if (!pendingAdminDashboard) {
-    renderAdminAccessMessage('관리자 세션을 먼저 확인해야 합니다.', false);
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/admin/gate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: accessPassword }),
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      renderAdminAccessMessage(data.message, true);
-      showDashboard(pendingAdminDashboard);
-    } else {
-      renderAdminAccessMessage(data.message, false);
-    }
-  } catch (e) {
-    renderAdminAccessMessage('서버에 연결할 수 없습니다.', false);
+    renderInlineMessage(adminFinalMessage, '서버에 연결할 수 없습니다.', false);
   }
 });

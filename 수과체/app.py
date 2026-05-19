@@ -68,9 +68,13 @@ def login():
             'username': row[1],
             'role': row[3],
         }
+        if row[3] == 'admin':
+            msg = "admin 로그인 성공 했습니다. '우리의 나쁜 업적'의 1차 비밀번호는 20090610"
+        else:
+            msg = f'{row[1]} 로그인 성공 (role: {row[3]})'
         return jsonify({
             'success': True,
-            'message': f'{row[1]} 로그인 성공 (role: {row[3]})',
+            'message': msg,
             'query': query,
             'user': session['user'],
         })
@@ -150,18 +154,6 @@ def download_contract():
         return jsonify({'error': '권한 없음'}), 403
     return send_from_directory('.', '계약서.png', as_attachment=True,
                                download_name='내븐_개인정보이전계약서.png')
-
-
-@app.route('/api/admin/gate', methods=['POST'])
-def admin_gate():
-    user = session.get('user')
-    if not user or user.get('role') != 'admin':
-        return jsonify({'success': False, 'message': '관리자 세션이 없습니다.'}), 403
-
-    data = request.get_json()
-    if data.get('password', '') == 'NAVENADMIN':
-        return jsonify({'success': True, 'message': '접근 비밀번호가 확인되었습니다.'})
-    return jsonify({'success': False, 'message': '접근 비밀번호가 올바르지 않습니다.'})
 
 
 if __name__ == '__main__':

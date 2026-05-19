@@ -24,7 +24,7 @@
       <nav class="topbar-nav">
         <a href="#home" class="nav-link active" data-section="home">홈</a>
         <a href="#login" class="nav-link" data-section="login">로그인</a>
-        <a href="#admin" class="nav-link" data-section="admin" id="nav-admin">🔒 우리의 나쁜 업적</a>
+        <a href="#admin" class="nav-link" data-section="admin" id="nav-admin">우리의 나쁜 업적</a>
       </nav>
       <div class="topbar-right">
         <span class="security-badge">
@@ -159,21 +159,31 @@
     <section id="admin" class="section">
       <div class="section-inner">
 
-        <div id="admin-denied" class="denied-card">
-          <i data-lucide="shield-off" width="36" height="36"></i>
-          <h2>접근 권한 없음</h2>
-          <p>이 페이지는 관리자 계정으로만 열람 가능합니다.</p>
-          <p>현재 권한: <span class="badge badge-default" id="admin-role">guest</span></p>
-          <p class="text-muted-sm">먼저 로그인 페이지에서 관리자로 로그인해 주세요.</p>
+        <div class="form-card hidden" id="admin-gate-1">
+          <h2>1차 인증</h2>
+          <p style="font-size:0.9rem;color:#6b7280;margin-bottom:1rem;">관리자 계정으로 로그인하면 응답 메시지에 1차 비밀번호가 노출됩니다.</p>
+          <form id="admin-gate1-form" onsubmit="return false;">
+            <div class="form-group">
+              <label for="admin-gate1-password">1차 비밀번호</label>
+              <div class="input-wrapper">
+                <i data-lucide="key" class="input-icon"></i>
+                <input type="password" id="admin-gate1-password" class="form-input" placeholder="비밀번호 입력">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              확인 <i data-lucide="unlock" width="15" height="15"></i>
+            </button>
+          </form>
+          <div id="admin-gate1-message" class="message hidden"></div>
         </div>
 
         <!-- TODO: 임시 관리자 비밀번호 NAVENADMIN (5월 20일 교체 예정) -->
         <div class="form-card hidden" id="admin-gate">
-          <h2>추가 인증</h2>
-          <p style="font-size:0.9rem;color:#6b7280;margin-bottom:1rem;">관리자는 추가 인증이 필요합니다.<br>관리자 접근 비밀번호를 입력하세요.</p>
+          <h2>2차 인증</h2>
+          <p style="font-size:0.9rem;color:#6b7280;margin-bottom:1rem;">관리자는 추가 인증이 필요합니다.<br>2차 비밀번호를 입력하세요.</p>
           <form id="admin-access-form" onsubmit="return false;">
             <div class="form-group">
-              <label for="admin-access-password">접근 비밀번호</label>
+              <label for="admin-access-password">2차 비밀번호</label>
               <div class="input-wrapper">
                 <i data-lucide="key" class="input-icon"></i>
                 <input type="password" id="admin-access-password" class="form-input" placeholder="비밀번호 입력">
@@ -184,6 +194,18 @@
             </button>
           </form>
           <div id="admin-access-message" class="message hidden"></div>
+        </div>
+
+        <div class="form-card hidden" id="admin-final">
+          <h2>최종 잠금 해제</h2>
+          <p style="font-size:0.9rem;color:#6b7280;margin-bottom:1rem;">브라우저 콘솔(F12)에서 sessionStorage에 변수를 직접 추가하세요.</p>
+          <div class="code-hint">
+            <code>sessionStorage.naven_admin = 'true'</code>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="final-check-btn">
+            확인 <i data-lucide="unlock" width="15" height="15"></i>
+          </button>
+          <div id="admin-final-message" class="message hidden"></div>
         </div>
 
         <div class="hidden" id="admin-dashboard">

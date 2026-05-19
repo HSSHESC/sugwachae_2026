@@ -1,0 +1,28 @@
+# Claude Code
+.claude/
+.claude.local.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Flask / SQLite (init_db()가 매 실행마다 재생성)
+instance/
+*.sqlite3
+lab.db
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*~

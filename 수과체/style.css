@@ -634,6 +634,19 @@ body {
   margin-bottom: 0.25rem;
 }
 
+/* === Code Hint === */
+.code-hint {
+  background: var(--corp-dark);
+  border: 1px solid #374151;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+  color: #86efac;
+  overflow-x: auto;
+}
+.code-hint code { font-family: monospace; }
+
 /* === Contract Card === */
 .contract-card {
   margin-top: 0.9rem;
