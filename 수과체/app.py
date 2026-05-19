@@ -6,6 +6,7 @@ app = Flask(__name__, static_folder='.')
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'chapter2-sqli-lab-secret')
 
 DB = 'lab.db'
+IMAGES_DIR = os.path.join(os.path.dirname(__file__), '..', 'images')
 
 def init_db():
     con = sqlite3.connect(DB)
@@ -32,6 +33,10 @@ def index():
 @app.route('/<path:path>')
 def static_files(path):
     return send_from_directory('.', path)
+
+@app.route('/images/<path:filename>')
+def images(filename):
+    return send_from_directory(IMAGES_DIR, filename)
 
 # -------------------------
 # 로그인 — SQL Injection 취약 (의도적)
@@ -142,7 +147,7 @@ def get_contract():
     user = session.get('user')
     if not user or user.get('role') != 'admin':
         return jsonify({'error': '권한 없음'}), 403
-    with open('계약서.md', 'r', encoding='utf-8') as f:
+    with open(os.path.join(IMAGES_DIR, '계약서.md'), 'r', encoding='utf-8') as f:
         content = f.read()
     return jsonify({'content': content})
 
@@ -152,7 +157,7 @@ def download_contract():
     user = session.get('user')
     if not user or user.get('role') != 'admin':
         return jsonify({'error': '권한 없음'}), 403
-    return send_from_directory('.', '계약서.png', as_attachment=True,
+    return send_from_directory(IMAGES_DIR, '계약서.png', as_attachment=True,
                                download_name='내븐_개인정보이전계약서.png')
 
 

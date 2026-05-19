@@ -698,6 +698,17 @@ body {
 .contract-body blockquote { border-left: 3px solid var(--corp-accent); margin: 0.6rem 0; padding: 0.4rem 0.8rem; background: #fef2f2; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 .contract-body hr { border: none; border-top: 1px solid var(--border); margin: 0.9rem 0; }
 
+/* === Admin Section Background (단계별) === */
+#admin {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.3s ease;
+}
+#admin.bg-1 { background-image: url('/images/로그인1.png'); }
+#admin.bg-2 { background-image: url('/images/로그인2.png'); }
+#admin.bg-3 { background-image: url('/images/로그인3.png'); }
+
 /* === Typography === */
 h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.9rem; color: var(--text-main); letter-spacing: -0.02em; }
 h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }

@@ -94,10 +94,16 @@ loginButton.addEventListener('click', async () => {
 });
 
 // === Admin Section ===
+const adminSection = document.getElementById('admin');
 const adminGate1 = document.getElementById('admin-gate-1');
 const adminGate = document.getElementById('admin-gate');
 const adminFinal = document.getElementById('admin-final');
 const adminDashboard = document.getElementById('admin-dashboard');
+
+function setAdminBg(n) {
+  adminSection.classList.remove('bg-1', 'bg-2', 'bg-3');
+  if (n) adminSection.classList.add(`bg-${n}`);
+}
 
 const adminGate1Form = document.getElementById('admin-gate1-form');
 const adminGate1Password = document.getElementById('admin-gate1-password');
@@ -123,6 +129,7 @@ function hideAll() {
 
 function showAdminGate1() {
   hideAll();
+  setAdminBg(1);
   adminGate1.classList.remove('hidden');
   adminGate1Password.value = '';
   adminGate1Message.classList.add('hidden');
@@ -131,6 +138,7 @@ function showAdminGate1() {
 
 function showAdminGate() {
   hideAll();
+  setAdminBg(2);
   adminGate.classList.remove('hidden');
   adminAccessPassword.value = '';
   adminAccessMessage.classList.add('hidden');
@@ -139,6 +147,7 @@ function showAdminGate() {
 
 function showAdminFinal() {
   hideAll();
+  setAdminBg(3);
   adminFinal.classList.remove('hidden');
   adminFinalMessage.classList.add('hidden');
 }
@@ -164,6 +173,7 @@ async function loadContract() {
 
 function showDashboard(data) {
   hideAll();
+  setAdminBg(null);
   adminDashboard.classList.remove('hidden');
   loadContract();
   dashboardRole.textContent = data.role;
