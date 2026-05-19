@@ -239,8 +239,8 @@ adminAccessForm.addEventListener('submit', () => {
 
 // Step 3: sessionStorage 변수 + admin 세션 확인
 finalCheckBtn.addEventListener('click', async () => {
-  if (sessionStorage.getItem('naven_admin') !== 'true') {
-    renderInlineMessage(adminFinalMessage, 'sessionStorage에 naven_admin 변수가 없습니다.', false);
+  if (sessionStorage.getItem('naven_admin') !== 'True') {
+    renderInlineMessage(adminFinalMessage, 'sessionStorage에 naven_admin 변수가 없거나 False입니다.', false);
     return;
   }
   try {

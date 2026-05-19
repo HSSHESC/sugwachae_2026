@@ -14,13 +14,11 @@
 
   --border: #e5e7eb;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
+  --radius-sm: 0;
+  --radius-md: 0;
 
   --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.08);
   --shadow-md: 0 2px 8px rgb(0 0 0 / 0.10);
-
-  --transition: all 0.15s ease;
 
   /* Theme tokens (night 기본) */
   --topbar-bg:           var(--corp-dark);
@@ -70,7 +68,6 @@ body {
   flex-shrink: 0;
   background: var(--topbar-bg);
   border-bottom: 2px solid var(--corp-accent);
-  transition: background 0.2s ease;
 }
 
 .topbar-inner {
@@ -131,7 +128,6 @@ body {
   color: var(--nav-color);
   text-decoration: none;
   border-radius: var(--radius-sm);
-  transition: var(--transition);
   white-space: nowrap;
 }
 
@@ -165,10 +161,8 @@ body {
   padding: 0;
   background: transparent;
   border: 1px solid currentColor;
-  border-radius: 50%;
   color: var(--toggle-color);
   cursor: pointer;
-  transition: var(--transition);
 }
 .theme-toggle:hover {
   background: var(--toggle-hover-bg);
@@ -189,7 +183,6 @@ body {
   color: var(--corp-accent);
   padding: 0.22rem 0.6rem;
   border: 1px solid rgba(185,28,28,0.35);
-  border-radius: 3px;
 }
 
 /* === Main Panel === */
@@ -210,12 +203,6 @@ body {
 
 .section.active {
   display: block;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .section-inner {
@@ -500,7 +487,6 @@ body {
   font-family: inherit;
   color: var(--text-main);
   background: var(--surface);
-  transition: var(--transition);
 }
 
 .form-input::placeholder { color: var(--text-light); }
@@ -524,7 +510,6 @@ body {
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: var(--transition);
 }
 
 .btn-primary {
@@ -542,7 +527,6 @@ body {
 .badge {
   display: inline-block;
   padding: 0.15rem 0.45rem;
-  border-radius: 3px;
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -756,7 +740,6 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: background-image 0.3s ease;
 }
 #admin.bg-1 { background-image: url('/images/로그인1.png'); }
 #admin.bg-2 { background-image: url('/images/로그인2.png'); }
@@ -819,6 +802,10 @@ body {
   padding-top: 0.3rem;
 }
 .insider-cta-wrap .btn { display: inline-flex; align-items: center; gap: 0.4rem; width: auto; }
+
+/* === 극비 3차(admin-final)만 둥근 디자인 유지 === */
+#admin-final { border-radius: 8px; }
+#admin-final .btn { border-radius: 4px; }
 
 /* === Typography === */
 h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.9rem; color: var(--text-main); letter-spacing: -0.02em; }
