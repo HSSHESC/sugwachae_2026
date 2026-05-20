@@ -20,6 +20,10 @@ function showSection(target, updateHash = true) {
   if (section === 'admin') {
     loadAdminDashboard();
   }
+
+  if (section === 'insider') {
+    document.getElementById('insider-secret-value').textContent = 6696000 * 3 + 2610;
+  }
 }
 
 navLinks.forEach(link => {
@@ -132,6 +136,11 @@ const dashboardLogs = document.getElementById('dashboard-logs');
 const finalCheckBtn = document.getElementById('final-check-btn');
 const adminFinalMessage = document.getElementById('admin-final-message');
 
+// naven_admin 기본값: 변수는 존재하되 False — 학생이 직접 True로 바꿔야 통과
+if (sessionStorage.getItem('naven_admin') === null) {
+  sessionStorage.setItem('naven_admin', 'False');
+}
+
 function hideAll() {
   adminGate1.classList.add('hidden');
   adminGate.classList.add('hidden');
@@ -217,9 +226,18 @@ function loadAdminDashboard() {
   showAdminGate1();
 }
 
+// 1차/2차 비밀번호는 평문 대신 SHA-256 해시로만 비교 (소스에 평문 노출 방지)
+const GATE1_HASH = 'e0dac7ffd00b6de31f85889e5b6d139361e8f8cedb8694b884528bf0c77e6fa0';
+const GATE2_HASH = '2a8107e1b0abc3866a3f27c1e5992c3310da501db4be6f51086a94b57066e7ec';
+
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 // Step 1: 1차 비밀번호 (admin SQLi 로그인 응답 메시지에서 노출됨)
-adminGate1Form.addEventListener('submit', () => {
-  if (adminGate1Password.value === '20090610') {
+adminGate1Form.addEventListener('submit', async () => {
+  if (await sha256Hex(adminGate1Password.value) === GATE1_HASH) {
     renderInlineMessage(adminGate1Message, '1차 인증 완료.', true);
     setTimeout(showAdminGate, 600);
     return;
@@ -228,8 +246,8 @@ adminGate1Form.addEventListener('submit', () => {
 });
 
 // Step 2: 2차 비밀번호 (소스 코드 주석에서 노출됨)
-adminAccessForm.addEventListener('submit', () => {
-  if (adminAccessPassword.value === 'NAVENADMIN') {
+adminAccessForm.addEventListener('submit', async () => {
+  if (await sha256Hex(adminAccessPassword.value) === GATE2_HASH) {
     renderInlineMessage(adminAccessMessage, '2차 인증 완료.', true);
     setTimeout(showAdminFinal, 600);
     return;
