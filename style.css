@@ -5,7 +5,7 @@
   --color-bg: #f0f4f8;
   --color-surface: #ffffff;
   --color-text: #1e293b;
-  --color-muted: #64748b;
+  --color-muted: #64748b; 
   --radius: 8px;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
