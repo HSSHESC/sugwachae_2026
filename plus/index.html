@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>내븐 Corporation — DB 진단 시스템</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <img src="/images/NAVEN.png" alt="내븐" class="brand-logo">
+        <div class="brand-text">
+          <span class="brand-name">내븐</span>
+          <span class="brand-corp">Corporation · DB 진단</span>
+        </div>
+      </div>
+      <nav class="topbar-nav">
+        <a href="#diag" class="nav-link active">진단</a>
+      </nav>
+      <div class="topbar-right">
+        <span class="security-badge">
+          <i data-lucide="shield-alert" width="12" height="12"></i>
+          내부망 전용 · 극비
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-panel">
+    <section class="section active">
+      <div class="section-inner">
+
+        <div class="hero-banner">
+          <div class="hero-text">
+            <p class="hero-eyebrow">내부 진단 시스템 · OpenSSL 1.0.1f</p>
+            <h1>고객 DB Heartbeat 점검</h1>
+            <p class="hero-desc">
+              보안팀(해고됨) 인수인계 — 본 시스템은 사내 DB 가용성 점검을 위해
+              <strong style="color:#fca5a5;">Heartbeat 기능만</strong> 외부로 노출 중입니다.
+              점검 외 용도 사용 금지. <strong style="color:#f87171;">보안 패치는 무기한 연기되었습니다.</strong>
+            </p>
+          </div>
+          <div class="hero-status">
+            <i data-lucide="heart-pulse" width="24" height="24"></i>
+            <span>HB 수신 대기</span>
+          </div>
+        </div>
+
+        <div class="hb-cols">
+
+          <!-- 좌: 송신 폼 -->
+          <div class="hb-col">
+            <div class="form-card hb-card">
+              <h2>Heartbeat 송신</h2>
+              <p class="text-muted-sm" style="margin-bottom:1rem;">
+                서버에 메시지(payload)와 <strong>응답으로 받을 길이</strong>를 지정해 전송합니다.
+                정상 사용 시 두 값은 같아야 합니다.
+              </p>
+
+              <div class="form-group">
+                <label for="payload">payload (보낼 메시지)</label>
+                <div class="input-wrapper">
+                  <i data-lucide="message-square" class="input-icon"></i>
+                  <input type="text" id="payload" class="form-input" value="hi" placeholder="예: hi">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="length">응답 길이 (length, 0~65535)</label>
+                <div class="input-wrapper">
+                  <i data-lucide="ruler" class="input-icon"></i>
+                  <input type="number" id="length" class="form-input" value="2" min="0" max="65535">
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary btn-block" id="send-btn">
+                Heartbeat 전송 <i data-lucide="send" width="15" height="15"></i>
+              </button>
+
+              <div class="packet-preview">
+                <span class="packet-label">전송 패킷 미리보기</span>
+                <div class="packet-bytes" id="packet-preview"></div>
+                <div class="packet-legend">
+                  <span><span class="pk-dot pk-type-c"></span>type=01 (heartbeat req)</span>
+                  <span><span class="pk-dot pk-len-c"></span>length (요청 응답 크기)</span>
+                  <span><span class="pk-dot pk-data-c"></span>payload bytes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우: 응답 -->
+          <div class="hb-col">
+            <div class="form-card hb-card">
+              <h2>서버 응답</h2>
+
+              <div class="hex-dump" id="hex-dump">아직 전송된 Heartbeat 없음.</div>
+
+              <div class="resp-actions hidden" id="resp-actions">
+                <button type="button" class="btn btn-primary" id="download-btn">
+                  <i data-lucide="download" width="15" height="15"></i>
+                  다운로드
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="script.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
